@@ -13,15 +13,22 @@ output:
     toc: yes
     toc_depth: '2'
 ---
-  
 
 ```{r setup, echo = F}
-knitr::opts_chunk$set(
-  eval = TRUE,
-  echo = FALSE,
-  warning = FALSE,
-  message = FALSE
-)
+knit: (function(input_file, encoding) {
+    out_dir <- 'docs';
+    rmarkdown::render(input_file,
+      encoding=encoding,
+      output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+```
+
+```{r setup, echo = F}
+# knitr::opts_chunk$set(
+#   eval = TRUE,
+#   echo = FALSE,
+#   warning = FALSE,
+#   message = FALSE
+# )
 ```
 
 ```{=html}
