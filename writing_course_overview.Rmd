@@ -1,0 +1,360 @@
+---
+title: 'Writing Course'
+date: "May 2022"
+output:
+  html_document:
+    highlight: haddock
+    theme: journal
+    number_sections: no
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+  
+
+```{r setup, echo = F}
+knitr::opts_chunk$set(
+  eval = TRUE,
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{=html}
+<style type="text/css">
+  body{
+  font-family: Poppins;
+}
+</style>
+```
+
+# Introduction
+
+```{r cache=FALSE, results=FALSE, warning=FALSE, comment=FALSE, warning=FALSE, include = FALSE}
+library(plyr)
+library(readr)
+library(skimr)
+library(readxl)
+library(knitr) 
+library(stargazer) 
+library(tidyverse)
+library(janitor)
+library(extrafont)
+library(readr)
+library(GGally)
+library(ggtext)
+library(scales)
+library(ggpubr)
+library(ggrepel)
+library(ggthemes)
+library(ggtech)
+library(ggpubr)
+library(tidytext)
+
+```
+
+
+```{r include = FALSE}
+data <- read_excel("data/writing/Copy of Stanford University S22' Mid-Semester Student Voice Survey (Responses).xlsx")
+
+# Alter the names of the data frame 
+
+## School
+school_column <- "School you currently attend:"
+names(data)[names(data) == school_column] <- 'school'
+
+## Experience
+experience_column <- "How positive or negative has your experience been so far in this Course?" 
+names(data)[names(data) == experience_column] <- 'experience'
+
+## Preparation
+preparation_column <- "How prepared or unprepared did you feel going into the course?"
+names(data)[names(data) == preparation_column] <- 'preparation'
+
+## Help
+help_column <- "How helpful or unhelpful is your Teaching Fellow/Teaching Assistant?" 
+names(data)[names(data) == help_column] <- 'help'
+
+## Support
+support_column <- "What is the most helpful thing your teaching fellow has done to support your learning?"
+names(data)[names(data) == support_column] <- 'support'
+
+## Additional support
+additional_support_column <- 'How could your Teaching Fellow/Teaching Assistant better support you? Examples: additional study halls, reviewing last week\'s assignment, walkthrough of the upcoming assignments, etc.'
+names(data)[names(data) == additional_support_column] <- 'additional_support'
+
+## Highlight 
+highlight_column <- "What has been one highlight for you so far in the course?"
+names(data)[names(data) == highlight_column] <- 'highlight'
+```
+
+```{r include = FALSE}
+school <- data |> 
+  group_by(`school`) |> 
+  summarize('value' = n()) |> 
+  arrange(-`value`)
+
+```
+
+```{r participants}
+```
+
+
+```{r participants}
+ggplot(school, aes(x = reorder(school, -value), y = value, fill = school)) +
+geom_bar(position="dodge", stat="identity") +
+theme_minimal() + 
+labs(title = school_column, subtitle ="",caption = "", x = "School", y= "")  + 
+geom_text(aes(label = value), vjust = 2, color = "#ffffff", family="Poppins", size= 4) +
+theme(plot.title = element_textbox_simple(face = "bold", size = 19, family = "Poppins"),
+      plot.subtitle=element_textbox_simple(size=17, family= "Poppins"),
+      plot.caption = element_text(size=9 , family = "Poppins"),
+      legend.position="none",
+      legend.title = element_blank(),
+      legend.text = element_blank(),
+      axis.text.x = element_text(size= 6, family='Poppins',color="black", angle=90),
+      axis.text.y = element_blank(),
+      axis.title.y = element_text(size= 11, family='Poppins',color="black"),plot.title.position = "plot",
+      axis.title.x = element_blank(), 
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.line = element_blank())
+  #scale_fill_manual(values = c("#955595","#FBC02A", "#7F7F7F"))
+```
+```{r include = FALSE}
+experience <- data |> 
+  group_by(`experience`) |> 
+  summarize('value' = as.double(sprintf(100*n()/nrow(data), fmt = '%#.1f'))) |> 
+  arrange(-`value`)
+
+```
+
+```{r experience}
+ggplot(experience, aes(x = reorder(experience, -value), y = value, fill = experience)) +
+geom_bar(position="dodge", stat="identity") +
+theme_minimal() + 
+labs(title = experience_column, subtitle ="",caption = "", x = "School", y= "")  + 
+geom_text(aes(label = paste(value,"%",sep="")), vjust = 2, color = "#ffffff", family="Poppins", size= 4) +
+theme(plot.title = element_textbox_simple(face = "bold", size = 19, family = "Poppins"),
+      plot.subtitle=element_textbox_simple(size=17, family= "Poppins"),
+      plot.caption = element_text(size=9 , family = "Poppins"),
+      legend.position="none",
+      legend.title = element_blank(),
+      legend.text = element_blank(),
+      axis.text.x = element_text(size= 10, family='Poppins',color="black"),
+      axis.text.y = element_blank(),
+      axis.title.y = element_text(size= 11, family='Poppins',color="black"),plot.title.position = "plot",
+      axis.title.x = element_blank(), 
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.line = element_blank())
+  #scale_fill_manual(values = c("#955595","#FBC02A", "#7F7F7F"))
+```
+
+```{r include = FALSE}
+preparation <- data |> 
+  group_by(`preparation`) |> 
+  summarize('value' = as.double(sprintf(100*n()/nrow(data), fmt = '%#.1f'))) |> 
+  arrange(-`value`)
+
+```
+
+```{r preparation}
+ggplot(preparation, aes(x = reorder(preparation, -value), y = value, fill = preparation)) +
+geom_bar(position="dodge", stat="identity") +
+theme_minimal() + 
+labs(title = preparation_column, subtitle ="",caption = "", x = "School", y= "")  + 
+geom_text(aes(label = paste(value,"%",sep="")), vjust = 2, color = "#ffffff", family="Poppins", size= 4) +
+theme(plot.title = element_textbox_simple(face = "bold", size = 19, family = "Poppins"),
+      plot.subtitle=element_textbox_simple(size=17, family= "Poppins"),
+      plot.caption = element_text(size=9 , family = "Poppins"),
+      legend.position="none",
+      legend.title = element_blank(),
+      legend.text = element_blank(),
+      axis.text.x = element_text(size= 8, family='Poppins',color="black", angle = 90),
+      axis.text.y = element_blank(),
+      axis.title.y = element_text(size= 11, family='Poppins',color="black"),plot.title.position = "plot",
+      axis.title.x = element_blank(), 
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.line = element_blank())
+  #scale_fill_manual(values = c("#955595","#FBC02A", "#7F7F7F"))
+```
+
+
+```{r include = FALSE}
+help <- data |> 
+  group_by(`help`) |> 
+  summarize('value' = as.double(sprintf(100*n()/nrow(data), fmt = '%#.1f'))) |> 
+  arrange(-`value`)
+
+```
+
+```{r help}
+ggplot(help, aes(x = reorder(help, -value), y = value, fill = help)) +
+geom_bar(position="dodge", stat="identity") +
+theme_minimal() + 
+labs(title = help_column, subtitle ="",caption = "", x = "School", y= "")  + 
+geom_text(aes(label = paste(value,"%",sep="")), vjust = 1.7, color = "#ffffff", family="Poppins", size= 4) +
+theme(plot.title = element_textbox_simple(face = "bold", size = 19, family = "Poppins"),
+      plot.subtitle=element_textbox_simple(size=17, family= "Poppins"),
+      plot.caption = element_text(size=9 , family = "Poppins"),
+      legend.position="none",
+      legend.title = element_blank(),
+      legend.text = element_blank(),
+      axis.text.x = element_text(size= 8, family='Poppins',color="black"),
+      axis.text.y = element_blank(),
+      axis.title.y = element_text(size= 11, family='Poppins',color="black"),plot.title.position = "plot",
+      axis.title.x = element_blank(), 
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.line = element_blank())
+  #scale_fill_manual(values = c("#955595","#FBC02A", "#7F7F7F"))
+```
+
+
+```{r include = FALSE}
+# packages <- c("wordcloud", "tm")
+# lapply(packages, require , character.only = TRUE)
+# wordcloud(data$support, scale = c(2, 1), min.freq = 50, colors = rainbow(30))
+# 
+# df_support <- data_frame(Text = peter_pan)
+# 
+# peter_words <- data %>% 
+#   select("support") |> 
+#   unnest_tokens(output = word, input = Text) 
+
+# Identify common words
+library(stringr)
+table(unlist(strsplit(tolower(data$support), " ")))
+support_freq <- data.frame(table(unlist(strsplit(tolower(data$support), " "))))
+support_freq <- arrange(support_freq, - Freq)
+
+# Create frequency table
+Resources <- c('feedback', 'question', 'office hour', 'comment', 'understanding')
+
+data$support <- tolower(data$support)
+frequency <- data.frame(Resources,frequency=rowSums(!adist(Resources,data$support,partial = T))) |>
+  mutate(Percentage = as.double(sprintf(frequency/nrow(data)*100, fmt = '%#.1f'))) |>
+  arrange(desc(Resources))
+```
+
+```{r include = FALSE}
+# Identify common words
+table(unlist(strsplit(tolower(data$additional_support), " ")))
+support_freq <- data.frame(table(unlist(strsplit(tolower(data$additional_support), " "))))
+support_freq <- arrange(support_freq, - Freq)
+
+# Create frequency table
+Resources <- c('review', 'upcoming assignment', 'individual meets', "study hall")
+data$additional_support <- tolower(data$additional_support)
+frequency <- data.frame(Resources,frequency=rowSums(!adist(Resources,data$additional_support,partial = T))) |>
+  mutate(value = as.double(sprintf(frequency/nrow(data)*100, fmt = '%#.1f'))) |>
+  arrange(desc(value))
+```
+
+```{r additional support}
+ggplot(frequency, aes(x = reorder(Resources, -value), y = value, fill = value)) +
+geom_bar(position="dodge", stat="identity") +
+theme_minimal() + 
+labs(title = additional_support_column, subtitle ="",caption = "", x = "School", y= "")  + 
+geom_text(aes(label = paste(value,"%",sep="")), vjust = 1.5, color = "#ffffff", family="Poppins", size= 4) +
+theme(plot.title = element_textbox_simple(face = "bold", size = 14, family = "Poppins"),
+      plot.subtitle=element_textbox_simple(size=17, family= "Poppins"),
+      plot.caption = element_text(size=9 , family = "Poppins"),
+      legend.position="none",
+      legend.title = element_blank(),
+      legend.text = element_blank(),
+      axis.text.x = element_text(size= 8, family='Poppins',color="black"),
+      axis.text.y = element_blank(),
+      axis.title.y = element_text(size= 11, family='Poppins',color="black"),plot.title.position = "plot",
+      axis.title.x = element_blank(), 
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.line = element_blank())
+  #scale_fill_manual(values = c("#955595","#FBC02A", "#7F7F7F"))
+```
+```{r include = FALSE}
+# Identify common words
+#tm_map(data$highlight, removeWords, stopwords('english'))
+table(unlist(strsplit(tolower(data$highlight), " ")))
+support_freq <- data.frame(table(unlist(strsplit(tolower(data$highlight), " "))))
+support_freq <- arrange(support_freq, - Freq)
+
+# Create frequency table
+Resources <- c('review', 'upcoming assignment', 'walkthrough','individual meets')
+data$highlight <- tolower(data$highlight)
+frequency <- data.frame(Resources,frequency=rowSums(!adist(Resources,data$highlight,partial = T))) |>
+  mutate(value = as.double(sprintf(frequency/nrow(data)*100, fmt = '%#.1f'))) |>
+  arrange(desc(value))
+```
+
+```{r highlight}
+viz <- ggplot(frequency, aes(x = reorder(Resources, -value), y = value, fill = value)) +
+geom_bar(position="dodge", stat="identity") +
+theme_minimal() + 
+labs(title = help_column, subtitle ="",caption = "", x = "School", y= "")  + 
+geom_text(aes(label = paste(value,"%",sep="")), vjust = 1.5, color = "#ffffff", family="Poppins", size= 4) +
+theme(plot.title = element_textbox_simple(face = "bold", size = 19, family = "Poppins"),
+      plot.subtitle=element_textbox_simple(size=17, family= "Poppins"),
+      plot.caption = element_text(size=9 , family = "Poppins"),
+      legend.position="none",
+      legend.title = element_blank(),
+      legend.text = element_blank(),
+      axis.text.x = element_text(size= 8, family='Poppins',color="black"),
+      axis.text.y = element_blank(),
+      axis.title.y = element_text(size= 11, family='Poppins',color="black"),plot.title.position = "plot",
+      axis.title.x = element_blank(), 
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.line = element_blank())
+  #scale_fill_manual(values = c("#955595","#FBC02A", "#7F7F7F"))
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+
+write.table(data$highlight, "file.txt", append = FALSE, sep = " ", dec = ".",
+            row.names = FALSE, col.names = TRUE)
+file <- readLines("file.txt")
+df<- data_frame(Text = file)
+
+df_words <- df %>% 
+  unnest_tokens(output = word, input = Text) 
+words <- df_words %>%
+  anti_join(stop_words)
+wordcounts <- words %>% 
+  count(word, sort = TRUE)
+
+# Create plot
+peter_text <- Corpus(VectorSource(file))
+peter_text_clean <- tm_map(peter_text, removePunctuation)
+peter_text_clean <- tm_map(peter_text_clean, content_transformer(tolower))
+peter_text_clean <- tm_map(peter_text_clean, removeNumbers)
+peter_text_clean <- tm_map(peter_text_clean, stripWhitespace)
+peter_text_clean <- tm_map(peter_text_clean, removeWords, stopwords('english'))
+
+library(wordcloud)
+wordcloud(peter_text_clean, scale = c(2, 1), min.freq = 8, colors = rainbow(30))
+
+wordcloud(words = frequency$Resources, freq = frequency$frequency, min.freq = 1,           max.words=200, random.order=FALSE, rot.per=0.35,            colors=brewer.pal(8, "Dark2"))
+```
+
+
